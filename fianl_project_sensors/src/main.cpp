@@ -2,6 +2,7 @@
 #include <DHT.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <Wire.h>
 
 #include "app_config.h"
 #include "network.h"
@@ -14,6 +15,8 @@ DHT dht(AppConfig::DHT_PIN, AppConfig::DHT_TYPE);
 void setup() {
   Serial.begin(115200);
   delay(1000);
+
+  Wire.begin();
 
   Network::setupWiFi(AppConfig::WIFI_SSID, AppConfig::WIFI_PASSWORD);
   Network::setupMqttServer(mqttClient, AppConfig::MQTT_SERVER, AppConfig::MQTT_PORT);
@@ -61,5 +64,31 @@ void loop() {
   } else {
     Network::publishJsonNull(mqttClient, AppConfig::TEMPERATURE_TOPIC);
     Network::publishJsonNull(mqttClient, AppConfig::HUMIDITY_TOPIC);
+  }
+
+  // --- Slave weather data (I2C) ---
+  Sensors::SlaveWeatherData weather =
+      Sensors::requestSlaveWeather(AppConfig::I2C_SLAVE_ADDR,
+                                   AppConfig::I2C_PAYLOAD_SIZE);
+  Sensors::printSlaveWeather(weather);
+
+  if (weather.valid) {
+    Network::publishJsonValue(
+        mqttClient, AppConfig::WEATHER_WATER_TOPIC,
+        static_cast<int>(weather.waterPercent));
+    Network::publishJsonValue(
+        mqttClient, AppConfig::WEATHER_LIGHT_TOPIC,
+        static_cast<int>(weather.lightPercent));
+    Network::publishJsonValue(
+        mqttClient, AppConfig::WEATHER_TEMPERATURE_TOPIC,
+        weather.temperatureC, 1);
+    Network::publishJsonValue(
+        mqttClient, AppConfig::WEATHER_HUMIDITY_TOPIC,
+        weather.humidityPercent, 1);
+  } else {
+    Network::publishJsonNull(mqttClient, AppConfig::WEATHER_WATER_TOPIC);
+    Network::publishJsonNull(mqttClient, AppConfig::WEATHER_LIGHT_TOPIC);
+    Network::publishJsonNull(mqttClient, AppConfig::WEATHER_TEMPERATURE_TOPIC);
+    Network::publishJsonNull(mqttClient, AppConfig::WEATHER_HUMIDITY_TOPIC);
   }
 }
