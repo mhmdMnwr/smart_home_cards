@@ -23,17 +23,8 @@ void handleSerial() {
 
         if (input == appState.storedPassword) {
           Serial.println("OK");
-          appState.failCount = 0;
-          appState.alarmState = false;
-          digitalWrite(PIN_ALARM, LOW);
         } else {
           Serial.println("FAIL");
-          appState.failCount++;
-          if (appState.failCount >= 3) {
-            appState.alarmState = true;
-            digitalWrite(PIN_ALARM, HIGH);
-            Serial.println("[ALARM] Triggered by serial failures");
-          }
         }
       }
       buf = "";

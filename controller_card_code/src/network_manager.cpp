@@ -40,7 +40,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
     } else if (t == T_ALARM) {
       appState.alarmState = on;
       digitalWrite(PIN_ALARM, on ? HIGH : LOW);
-      if (!on) appState.failCount = 0;
     }
 
     Serial.print("[MQTT] ");

@@ -19,7 +19,7 @@ extern const char* T_CHPWD_STAT;
 extern const char* T_STATUS;
 
 // Pin definitions
-constexpr uint8_t PIN_LAMP1 = D3;
+constexpr uint8_t PIN_LAMP1 = D1;
 constexpr uint8_t PIN_LAMP2 = D2;
 constexpr uint8_t PIN_FAN1 = D5;
 constexpr uint8_t PIN_FAN2 = D6;

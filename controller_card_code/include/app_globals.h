@@ -6,7 +6,6 @@
 
 struct AppState {
   String storedPassword = "1234";
-  int failCount = 0;
   bool alarmState = false;
 };
 

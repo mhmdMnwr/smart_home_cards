@@ -2,7 +2,7 @@
 
 const char* WIFI_SSID = "Mnwr's M14";
 const char* WIFI_PASS = "mnwrameur20044";
-const char* MQTT_SERVER = "10.33.137.89";
+const char* MQTT_SERVER = "10.228.191.110";
 const int MQTT_PORT = 1883;
 
 const char* T_LAMP1 = "smartHome/devices/lamp/lamp1/set";
